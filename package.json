@@ -1,0 +1,30 @@
+{
+  "name": "zin",
+  "version": "0.1.0",
+  "description": "An ultra-minimalist static site generator focused on JS-native solutions. Emphasizes structured JSON data, EJS templates, and a systematic, template-driven development approach.",
+  "scripts": {
+    "start": "node start.js",
+    "build": "node ./generator/build.js"
+  },
+  "bin": {
+    "zin": ".generator/cli.js"
+  },
+  "keywords": [
+    "static-site-generator",
+    "ejs",
+    "sass",
+    "website-builder",
+    "zin",
+    "json",
+    "minimalist"
+  ],
+  "author": "Nio Ono <me@nioono.com>",
+  "license": "ISC",
+  "dependencies": {
+    "browser-sync": "^2.29.3",
+    "concurrently": "^8.2.2",
+    "ejs": "^3.1.9",
+    "fs-extra": "^11.1.1",
+    "sass": "^1.69.4"
+  }
+}

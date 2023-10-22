@@ -1,0 +1,14 @@
+*/media/
+www/
+*.DS_Store
+*.mp4
+*.m4v
+*.mov
+*.pdf
+*.gif
+*.jpg
+*.scssc
+*.svg
+.nova
+public
+node_modules
