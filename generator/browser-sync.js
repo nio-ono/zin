@@ -4,7 +4,7 @@ const buildSite = require('./build');
 
 function runBrowserSync() {
     browserSync.init({
-        server: './public',
+        server: config.server.paths.public,
         port: config.server.port,
         open: false,
         notify: false,
