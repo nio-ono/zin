@@ -33,7 +33,7 @@ Using Zin revolves around understanding its compiler, server mechanics, and the 
 
 1. Clone the Zin repository:
 ```
-git clone [repository_url] your_project_name
+git clone https://github.com/nio-ono/zin/ your_project_name
 ```
 
 2. Navigate to the project directory:
