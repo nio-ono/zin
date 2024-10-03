@@ -1,2 +1,2 @@
-const browserSync = require('./generator/browser-sync');
-browserSync();
+const runBrowserSync = require('./lib/browser-sync');
+runBrowserSync();
