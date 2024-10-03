@@ -90,18 +90,11 @@ Zin emphasizes fluidity, simplicity, and a no-surprises environment. The compile
 
 ## Configuration
 
-Zin uses a `config.js` file at the root of your project for configuration. Here's an overview of its structure:
+Zin stores configurations in two files: `config.js`, for server configuration, and `globals.js`, for metadata like the site title and description.
 
-### `site`
+### `config`
 
-This section contains metadata related to the overall site.
-
-- **`name`**: The title or name of your project. Typically rendered in the `<title>` tag or the header of a website.
-- **`description`**: A brief description or tagline. Often used in meta tags for SEO or as a website's subtitle.
-
-### `server`
-
-This section contains configurations related to the server and directory structures.
+Zin's server configuration is managed through a `config.js` file located at the root of your project. This file includes settings for the server and directory structures.
 
 - **`port`**: Specifies the port on which the development server will run. By default, it's set to 3000.
 - **`paths`**: Defines various paths essential for both source content and compiled output. This makes it easy to change directory names or structures if needed.
@@ -114,7 +107,15 @@ This section contains configurations related to the server and directory structu
     - **`scripts`**: This is where you'd place all client-side scripts.
     - **`assets`**: A generic container for all other assets like images, fonts, and more.
 
-With `config.js`, Zin provides a centralized space to manage essential configurations, streamlining development and offering flexibility in organizing and accessing project components.
+### `globals`
+
+Zin uses a `globals.js` file in the `source` directory for site-wide settings and metadata that need to be accessible to pages and templates. Here's an overview of its structure:
+
+- **`site`**: This section contains metadata related to the overall site.
+  - **`name`**: The title or name of your project. Typically rendered in the `<title>` tag or the header of a website.
+  - **`description`**: A brief description or tagline. Often used in meta tags for SEO or as a website's subtitle.
+
+With `config.js` and `globals.js`, Zin provides centralized spaces to manage essential configurations and site-wide settings, streamlining development and offering flexibility in organizing and accessing project components.
 
 ## License
 
