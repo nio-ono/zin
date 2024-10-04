@@ -18,7 +18,17 @@
             <ul>
                 <% if (collections.blog) { %>
                     <% collections.blog.forEach(post => { %>
-                        <li><a href="<%= post.path %>"><%= post.config.title || 'Untitled' %></a></li>
+                        <li>
+                            <a href="<%= post.path %>"><%= post.config.title || 'Untitled' %></a>
+                            <% if (post.config.tags && post.config.tags.length > 0) { %>
+                                <p>Tags:</p>
+                                <ul>
+                                    <% post.config.tags.forEach(tag => { %>
+                                        <li><%= tag %></li>
+                                    <% }) %>
+                                </ul>
+                            <% } %>
+                        </li>
                     <% }) %>
                 <% } else { %>
                     <li>No blog posts found.</li>
