@@ -7,35 +7,7 @@
     <%- include('partials/_header') %>
     <%- include('partials/_nav') %>
     <main>
-        <header>
-            <h1><%= site.name %></h1>
-            <h2><%= site.description %></h2>
-        </header>
-        
-        <section>
-            <h2>A Sample Collection</h2>
-
-            <% const collection = 'sample-collection'; %>            
-            <% if (collections[collection]) { collections[collection].forEach((item) => { %>
-                <article>
-                    <h3><a href="/<%= collection %>/<%= item.config.slug %>/"><%= item.config.title %></a></h3>
-                    <time>Date: <%= item.config.date %></time>
-                    <p>Description: <%= item.config.description %></p>
-                    <ul>Tags: 
-                        <% if (item.config.tags && Array.isArray(item.config.tags)) { %>
-                            <% item.config.tags.forEach((tag, index) => { %>
-                                <li>
-                                    <%= tag %><%= index < item.config.tags.length - 1 ? ', ' : '' %> 
-                                </li>
-                            <% }); %>
-                        <% } else { %>
-                            <li>No tags available</li>
-                        <% } %>
-                    </ul>
-                </article>
-            <% }) } %>
-
-        </section>
+        <%- content %>
     </main>
     <%- include('partials/_footer') %>
 </body>
