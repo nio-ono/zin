@@ -33,13 +33,11 @@ async function main() {
 
 async function initProject() {
     const destinationDir = process.cwd();
-    const templateDir = path.join(__dirname, '..', 'templates');
 
     // Initialize necessary directories
     const directories = [
         'source/pages',
         'source/templates',
-        'source/templates/partials',
         'source/styles',
         'source/scripts',
         'source/assets'
@@ -47,21 +45,6 @@ async function initProject() {
 
     for (const dir of directories) {
         await fs.ensureDir(path.join(destinationDir, dir));
-    }
-
-    // Copy sample files
-    const sampleFiles = [
-        { src: 'config.js', dest: 'config.js' },
-        { src: 'globals.js', dest: 'globals.js' },
-        { src: 'source/pages/index.ejs', dest: 'source/pages/index.ejs' },
-        { src: 'source/pages/about.ejs', dest: 'source/pages/about.ejs' },
-        { src: 'source/templates/index.ejs', dest: 'source/templates/index.ejs' },
-        { src: 'source/templates/page.ejs', dest: 'source/templates/page.ejs' },
-        { src: 'source/templates/partials/_head.ejs', dest: 'source/templates/partials/_head.ejs' }
-    ];
-
-    for (const file of sampleFiles) {
-        await fs.copyFile(path.join(templateDir, file.src), path.join(destinationDir, file.dest));
     }
 
     // Create default config.js
