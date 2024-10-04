@@ -2,7 +2,7 @@
 
 const path = require('path');
 const fs = require('fs-extra');
-const buildSite = require('../lib/build');
+const { buildSite } = require('../lib/build');
 const runBrowserSync = require('../lib/browser-sync');
 // const { execSync } = require('child_process');
 
