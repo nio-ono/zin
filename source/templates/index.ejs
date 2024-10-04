@@ -15,25 +15,15 @@
         <section>
             <h2>A Sample Collection</h2>
 
-            <% const collection = 'blog'; %>            
-            <% if (collections[collection]) { collections[collection].forEach((item) => { %>
-                <article>
-                    <h3><a href="/<%= collection %>/<%= item.config.slug %>/"><%= item.config.title %></a></h3>
-                    <time>Date: <%= item.config.date %></time>
-                    <p>Description: <%= item.config.description %></p>
-                    <ul>Tags: 
-                        <% if (item.config.tags && Array.isArray(item.config.tags)) { %>
-                            <% item.config.tags.forEach((tag, index) => { %>
-                                <li>
-                                    <%= tag %><%= index < item.config.tags.length - 1 ? ', ' : '' %> 
-                                </li>
-                            <% }); %>
-                        <% } else { %>
-                            <li>No tags available</li>
-                        <% } %>
-                    </ul>
-                </article>
-            <% }) } %>
+            <ul>
+                <% if (collections.blog) { %>
+                    <% collections.blog.forEach(post => { %>
+                        <li><a href="<%= post.path %>"><%= post.config.title || 'Untitled' %></a></li>
+                    <% }) %>
+                <% } else { %>
+                    <li>No blog posts found.</li>
+                <% } %>
+            </ul>
 
         </section>
     </main>
