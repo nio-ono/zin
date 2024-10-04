@@ -15,7 +15,7 @@
         <section>
             <h2>A Sample Collection</h2>
 
-            <% const collection = 'sample-collection'; %>            
+            <% const collection = 'blog'; %>            
             <% if (collections[collection]) { collections[collection].forEach((item) => { %>
                 <article>
                     <h3><a href="/<%= collection %>/<%= item.config.slug %>/"><%= item.config.title %></a></h3>
