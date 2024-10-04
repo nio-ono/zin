@@ -65,14 +65,7 @@ module.exports = {
         port: 3000,
         paths: {
             source: "./source/",
-            public: "./public/",
-            sourcePaths: {
-                pages: "pages/",
-                templates: "templates/",
-                styles: "styles/",
-                scripts: "scripts/",
-                assets: "assets/",
-            },
+            public: "./public/"
         }
     }
 };
@@ -100,7 +93,17 @@ module.exports = {
         console.error('Failed to create globals.js:', error);
     }
 
-    console.log('Starter project initialized successfully.');
+    console.log('Starter project initialized successfully.');  
+    
+    // Run the build command to perform the initial build on init
+    try {
+        // const buildScript = path.join(__dirname, '../lib/build.js');
+        // await require(buildScript).buildSite();
+        await buildSite();
+        console.log('Initial build completed successfully.');
+    } catch (error) {
+        console.error('Failed to complete the initial build:', error);
+    }
 }
 
 async function promptOverwrite() {
