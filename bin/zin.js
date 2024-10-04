@@ -35,7 +35,7 @@ async function initProject() {
     const destinationDir = process.cwd();
 
     // Define the paths for template and project source directories
-    const templateSourceDir = path.join(__dirname, '..', 'source');
+    const templateSourceDir = path.join(__dirname, '..', 'starter-files');
     const projectSourceDir = path.join(destinationDir, 'source');
 
     // Check if the project already has a source directory

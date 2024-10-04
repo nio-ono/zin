@@ -27,7 +27,7 @@
   "files": [
     "bin/",
     "lib/",
-    "source/",
+    "starter-files/",
     "index.js",
     "README.md",
     "LICENSE"
