@@ -3,68 +3,102 @@
 const path = require('path');
 const fs = require('fs-extra');
 const buildSite = require('../lib/build');
+const runBrowserSync = require('../lib/browser-sync');
 const { execSync } = require('child_process');
 
 const args = process.argv.slice(2);
 
 async function main() {
     try {
-        if (args[0] === 'init') {
-            const sourceDir = path.join(__dirname, '..', 'source');
-            const configFile = path.join(__dirname, '..', 'config.js');
-            const packageFile = path.join(__dirname, '..', 'package.json');
-            const startFile = path.join(__dirname, '..', 'start.js');
-            const libDir = path.join(__dirname, '..', 'lib');
-            const destinationDir = process.cwd();
-            
-            // Copy 'source/' directory
-            await fs.copy(sourceDir, path.join(destinationDir, 'source'));
-            console.log('Source directory copied.');
-            
-            // Copy 'config.js'
-            await fs.copy(configFile, path.join(destinationDir, 'config.js'));
-            console.log('config.js copied.');
-            
-            // Copy 'package.json'
-            await fs.copy(packageFile, path.join(destinationDir, 'package.json'));
-            console.log('package.json copied.');
-            
-            // Copy 'start.js'
-            await fs.copy(startFile, path.join(destinationDir, 'start.js'));
-            console.log('start.js copied.');
-            
-            // Copy 'lib/' directory
-            await fs.copy(libDir, path.join(destinationDir, 'lib'));
-            console.log('lib directory copied successfully.');
-            
-            // Ensure necessary directories exist within 'source/'
-            await fs.ensureDir(path.join(destinationDir, 'source', 'pages'));
-            await fs.ensureDir(path.join(destinationDir, 'source', 'templates'));
-            await fs.ensureDir(path.join(destinationDir, 'source', 'styles'));
-            await fs.ensureDir(path.join(destinationDir, 'source', 'scripts'));
-            await fs.ensureDir(path.join(destinationDir, 'source', 'assets'));
+        const command = args[0];
 
-            console.log('Directory structure created successfully.');
-            
-            console.log('Starter project set up successfully.');
-            console.log('Installing dependencies...');
-            
-            try {
-                execSync('npm install', { stdio: 'inherit' });
-                console.log('Dependencies installed successfully.');
-            } catch (error) {
-                console.error('Failed to install dependencies:', error);
-            }
-        } else if (args[0] === 'build') {
-            await buildSite();
-            console.log('Site built successfully.');
-        } else {
-            console.log('Invalid command. Use "zin init" or "zin build".');
+        switch (command) {
+            case 'init':
+                await initProject();
+                break;
+            case 'build':
+                await buildSite();
+                break;
+            case 'serve':
+                await runBrowserSync();
+                break;
+            default:
+                console.log('Invalid command. Use "zin init", "zin build", or "zin serve".');
         }
     } catch (err) {
         console.error('An error occurred:', err);
         process.exit(1);
     }
+}
+
+async function initProject() {
+    const destinationDir = process.cwd();
+    const templateDir = path.join(__dirname, '..', 'templates');
+
+    // Initialize necessary directories
+    const directories = [
+        'source/pages',
+        'source/templates',
+        'source/templates/partials',
+        'source/styles',
+        'source/scripts',
+        'source/assets'
+    ];
+
+    for (const dir of directories) {
+        await fs.ensureDir(path.join(destinationDir, dir));
+    }
+
+    // Copy sample files
+    const sampleFiles = [
+        { src: 'config.js', dest: 'config.js' },
+        { src: 'globals.js', dest: 'globals.js' },
+        { src: 'source/pages/index.ejs', dest: 'source/pages/index.ejs' },
+        { src: 'source/pages/about.ejs', dest: 'source/pages/about.ejs' },
+        { src: 'source/templates/index.ejs', dest: 'source/templates/index.ejs' },
+        { src: 'source/templates/page.ejs', dest: 'source/templates/page.ejs' },
+        { src: 'source/templates/partials/_head.ejs', dest: 'source/templates/partials/_head.ejs' }
+    ];
+
+    for (const file of sampleFiles) {
+        await fs.copyFile(path.join(templateDir, file.src), path.join(destinationDir, file.dest));
+    }
+
+    // Create default config.js
+    const configTemplate = `
+module.exports = {
+    server: {
+        port: 3000,
+        paths: {
+            source: "./source/",
+            public: "./public/",
+            sourcePaths: {
+                pages: "pages/",
+                templates: "templates/",
+                styles: "styles/",
+                scripts: "scripts/",
+                assets: "assets/",
+            },
+        }
+    }
+};
+    `;
+    await fs.writeFile(path.join(destinationDir, 'config.js'), configTemplate.trim());
+    console.log('config.js created.');
+
+    // Create default globals.js
+    const globalsTemplate = `
+module.exports = {
+    site: {
+        name: "My Zin Project",
+        description: "A description of my Zin project.",
+    }
+};
+    `;
+    await fs.writeFile(path.join(destinationDir, 'globals.js'), globalsTemplate.trim());
+    console.log('globals.js created.');
+
+    console.log('Starter project initialized successfully.');
 }
 
 main();
