@@ -2,121 +2,123 @@
 
 const path = require('path');
 const fs = require('fs-extra');
-const { buildSite } = require('../lib/build');
-const runBrowserSync = require('../lib/browser-sync');
-// const { execSync } = require('child_process');
-
-const args = process.argv.slice(2);
+const { parseArgs } = require('node:util');
+const { buildSite, cleanPublic } = require('../lib/build');
+const serve = require('../lib/browser-sync');
+const { promptConfirm } = require('../lib/utils');
 
 async function main() {
-    try {
-        const command = args[0];
+  const args = parseArgs({
+    allowPositionals: true,
+    options: {
+      yes: { type: 'boolean', short: 'y' },
+      force: { type: 'boolean', short: 'f' },
+      port: { type: 'string', short: 'p' },
+    },
+    tokens: true,
+  });
 
-        switch (command) {
-            case 'init':
-                await initProject();
-                break;
-            case 'build':
-                await buildSite();
-                break;
-            case 'serve':
-                await runBrowserSync();
-                break;
-            default:
-                console.log('Invalid command. Use "zin init", "zin build", or "zin serve".');
-        }
-    } catch (err) {
-        console.error('An error occurred:', err);
-        process.exit(1);
+  const command = args.positionals[0] || 'build';
+
+  try {
+    if (command === 'build') {
+      await buildSite();
+      return;
     }
+
+    if (command === 'serve') {
+      const portValue = args.values.port ? Number(args.values.port) : undefined;
+      await serve({ port: portValue });
+      return;
+    }
+
+    if (command === 'clean') {
+      await cleanPublic();
+      return;
+    }
+
+    if (command === 'init') {
+      await initProject({ yes: Boolean(args.values.yes), force: Boolean(args.values.force) });
+      return;
+    }
+
+    console.error('Unknown command');
+    process.exit(1);
+  } catch (error) {
+    console.error('An error occurred:', error);
+    process.exit(1);
+  }
 }
 
-async function initProject() {
-    const destinationDir = process.cwd();
+async function initProject({ yes = false, force = false } = {}) {
+  const destinationDir = process.cwd();
 
-    // Define the paths for template and project source directories
-    const templateSourceDir = path.join(__dirname, '..', 'source');
-    const projectSourceDir = path.join(destinationDir, 'source');
+  const templateSourceDir = path.join(__dirname, '..', 'source');
+  const projectSourceDir = path.join(destinationDir, 'source');
+  const configPath = path.join(destinationDir, 'config.js');
+  const globalsPath = path.join(destinationDir, 'globals.js');
 
-    // Check if the project already has a source directory
-    if (await fs.pathExists(projectSourceDir)) {
-        const { overwrite } = await promptOverwrite();
-        if (!overwrite) {
-            console.log('Initialization aborted to prevent overwriting existing source directory.');
-            return;
-        }
-        // Remove existing source directory
-        await fs.remove(projectSourceDir);
-    }
+  const existingTargets = [];
+  if (await fs.pathExists(projectSourceDir)) existingTargets.push(projectSourceDir);
+  if (await fs.pathExists(configPath)) existingTargets.push(configPath);
+  if (await fs.pathExists(globalsPath)) existingTargets.push(globalsPath);
 
-    // Copy all starter files from the template directory to the project directory
-    try {
-        await fs.copy(templateSourceDir, projectSourceDir, { overwrite: true });
-        console.log('Starter files have been copied to the source directory.');
-    } catch (error) {
-        console.error('An error occurred while copying starter files:', error);
-        return;
-    }
+  if (existingTargets.length > 0 && !force) {
+    console.error('Initialization aborted: project files already exist. Use --force to overwrite.');
+    return;
+  }
 
-    // Create default config.js
-    const configTemplate = `
-module.exports = {
-    server: {
-        port: 3000,
-        paths: {
-            source: "./source/",
-            public: "./public/"
-        }
+  if (existingTargets.length > 0 && force && !yes) {
+    const confirmed = await promptConfirm('Existing project files detected. Overwrite?');
+    if (!confirmed) {
+      console.log('Initialization aborted by user.');
+      return;
     }
-};
-    `;
-    try {
-        await fs.writeFile(path.join(destinationDir, 'config.js'), configTemplate.trim());
-        console.log('config.js created.');
-    } catch (error) {
-        console.error('Failed to create config.js:', error);
-    }
+  }
 
-    // Create default globals.js
-    const globalsTemplate = `
-module.exports = {
-    site: {
-        name: "My Zin Project",
-        description: "A description of my Zin project.",
-    }
-};
-    `;
-    try {
-        await fs.writeFile(path.join(destinationDir, 'globals.js'), globalsTemplate.trim());
-        console.log('globals.js created.');
-    } catch (error) {
-        console.error('Failed to create globals.js:', error);
-    }
+  for (const target of existingTargets) {
+    await fs.remove(target);
+  }
 
-    console.log('Starter project initialized successfully.');  
-    
-    // Run the build command to perform the initial build on init
-    try {
-        await buildSite();
-        console.log('Initial build completed successfully.');
-    } catch (error) {
-        console.error('Failed to complete the initial build:', error);
-    }
-}
+  try {
+    await fs.copy(templateSourceDir, projectSourceDir, { overwrite: true });
+    console.log('Starter files have been copied to the source directory.');
+  } catch (error) {
+    console.error('An error occurred while copying starter files:', error);
+    return;
+  }
 
-async function promptOverwrite() {
-    // Simple prompt to confirm overwriting existing source directory
-    // This can be enhanced using a library like 'inquirer' for better UX
-    return new Promise((resolve) => {
-        process.stdout.write('source directory already exists. Overwrite? (y/N): ');
-        process.stdin.resume();
-        process.stdin.setEncoding('utf8');
-        process.stdin.once('data', function(data) {
-            data = data.toString().trim().toLowerCase();
-            resolve({ overwrite: data === 'y' || data === 'yes' });
-            process.stdin.pause();
-        });
-    });
+  const configTemplate = `module.exports = {
+  server: {
+    port: 3000,
+    directories: {
+      source: "source",
+      public: "public",
+      pages: "pages"
+    }
+  }
+};`;
+  try {
+    await fs.writeFile(configPath, `${configTemplate}\n`);
+    console.log('config.js created.');
+  } catch (error) {
+    console.error('Failed to create config.js:', error);
+  }
+
+  const globalsTemplate = `module.exports = {
+  site: {
+    name: "My Zin Project",
+    description: "A description of my Zin project."
+  }
+};`;
+  try {
+    await fs.writeFile(globalsPath, `${globalsTemplate}\n`);
+    console.log('globals.js created.');
+  } catch (error) {
+    console.error('Failed to create globals.js:', error);
+  }
+
+  console.log('Starter project initialized successfully.');
 }
 
 main();
