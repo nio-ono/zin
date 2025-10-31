@@ -1,6 +1,6 @@
 {
   "name": "zin",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "An ultra-minimalist static site generator focused on JS-native solutions.",
   "main": "index.js",
   "bin": {

@@ -13,9 +13,10 @@ Zin is a static site generator designed around EJS templating, providing a unifo
 
 ### Key Functionality
 
-- **Dynamic Templating**: Leverages EJS templates for dynamic content, integrating configurations with templates to produce the final HTML.
-- **SASS Compilation**: All `.scss` files in `styles` undergo compilation to `.css` within `public/styles`, with the exception of those prefixed with `_`.
-- **Collections**: Organizes pages into collections based on their directory, facilitating content grouping.
+- **Incremental Rendering**: Tracks template includes and SCSS imports so only the pages or entrypoints affected by a change are rebuilt.
+- **Dynamic Templating**: Uses EJS for layouts and partials while keeping site configuration in familiar JavaScript modules.
+- **Automatic Collections**: Groups pages by directory, exposing the structure to your templates without additional wiring.
+- **Content Hashing**: Skips writes and BrowserSync reloads when output hasn’t changed, keeping the dev loop quiet and fast.
 
 ## Installation
 
@@ -26,13 +27,22 @@ npm install -g zin
 ## Usage
 
 ### Initialize a new project
-zin init
+`zin init`
+
+Flags:
+- `--yes` / `-y`: create starter files without prompting
+- `--force` / `-f`: overwrite existing `source`, `config.js`, or `globals.js`
 
 ### Build the site
-zin build
+`zin build`
 
 ### Start development server
-npm start
+`zin serve`
+
+Optional: `zin serve --port 4000`
+
+### Clean the publish directory
+`zin clean`
 
 ## Compiler Mechanics
 
@@ -72,13 +82,13 @@ Zin's server is more than just a static file server; it's a dynamic development 
    
 2. **No Caching**: To guarantee that developers see real-time modifications, the Zin server avoids caching. Every request fetches fresh content.
    
-3. **Wiping the Public Directory**: On detecting changes, the `public` directory undergoes a clean slate reset. This ensures no residual files from previous compilations linger, making deployments cleaner and reducing the chance of outdated content errors.
-   
-4. **Instant Updates**: The server watches for changes, and upon detection, immediately undertakes the compilation process.
+3. **Incremental rebuilds**: Only the pages, styles, or assets touched by a change are recompiled. Dependency graphs track template includes and SCSS imports.
+
+4. **Intelligent Debounce & Concurrency**: File events are batched and builds are limited to a configurable level of parallelism so large change sets do not overwhelm the process.
 
 ### Rationale Behind Server Mechanics:
 
-- **Avoiding Complexity**: By resetting the `public` directory and bypassing caching, Zin avoids the intricacies of differential builds. This ensures that developers always work with the most recent content, free from legacy data glitches.
+- **Avoiding Surprises**: Incremental rebuilds are the default, but `zin clean` is available when you need a fresh publish directory.
    
 - **Speed and Efficiency**: Instant updates and live reloading eliminate the manual refresh chore, accelerating the development process.
    
@@ -94,28 +104,21 @@ Zin stores configurations in two files: `config.js`, for server configuration, a
 
 ### `config`
 
-Zin's server configuration is managed through a `config.js` file located at the root of your project. This file includes settings for the server and directory structures.
+Zin's server configuration is managed through a `config.js` file located at the project root.
 
-- **`port`**: Specifies the port on which the development server will run. By default, it's set to 3000.
-- **`paths`**: Defines various paths essential for both source content and compiled output. This makes it easy to change directory names or structures if needed.
-  - **`source`**: The primary directory where all your site content, layout templates, styles, and client-side scripts reside.
-  - **`public`**: The target directory where your project compiles to. This is essentially what you'd deploy.
-  - **`sourcePaths`**: This subsection breaks down the structure within the source directory:
-    - **`pages`**: Houses the actual pages of your site, complete with their content.
-    - **`templates`**: Contains layout template files that offer structure to the site.
-    - **`styles`**: This directory will contain both SCSS and CSS files.
-    - **`scripts`**: This is where you'd place all client-side scripts.
-    - **`assets`**: A generic container for all other assets like images, fonts, and more.
+- **`port`**: Port used when running `zin serve`.
+- **`directories`**: Controls the layout of your workspace.
+  - **`source`**: Root for pages, templates, assets, and styles.
+  - **`public`**: Publish directory (served in dev and suitable for deployment).
+  - **`pages`**: Optional subdirectory inside `source` scoped to page content.
+- **`allowConfigJSON`**: When true, page templates may include an `@config … @config` block containing JSON (with comments) instead of a JavaScript `const config` declaration.
+- **`concurrency`** *(optional)*: Limits the number of concurrent tasks.
+  - **`render`**: Page renders processed in parallel (default `8`).
+  - **`styles`**: SCSS entrypoints compiled in parallel (default `8`).
 
 ### `globals`
 
-Zin uses a `globals.js` file in the `source` directory for site-wide settings and metadata that need to be accessible to pages and templates. Here's an overview of its structure:
-
-- **`site`**: This section contains metadata related to the overall site.
-  - **`name`**: The title or name of your project. Typically rendered in the `<title>` tag or the header of a website.
-  - **`description`**: A brief description or tagline. Often used in meta tags for SEO or as a website's subtitle.
-
-With `config.js` and `globals.js`, Zin provides centralized spaces to manage essential configurations and site-wide settings, streamlining development and offering flexibility in organizing and accessing project components.
+`globals.js` exports the metadata you want available in templates. Export plain values or helper functions and access them directly in your pages and layouts.
 
 ## License
 
