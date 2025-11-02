@@ -17,6 +17,7 @@ Zin is a static site generator designed around EJS templating, providing a unifo
 - **Dynamic Templating**: Uses EJS for layouts and partials while keeping site configuration in familiar JavaScript modules.
 - **Automatic Collections**: Groups pages by directory, exposing the structure to your templates without additional wiring.
 - **Content Hashing**: Skips writes and BrowserSync reloads when output hasn’t changed, keeping the dev loop quiet and fast.
+- **Declarative Build Plans**: A pure planner computes writes/removes up front, then a tiny committer applies them with hashing and concurrency for deterministic, testable builds.
 
 ## Installation
 
