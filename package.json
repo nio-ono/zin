@@ -1,17 +1,17 @@
 {
-  "name": "zin",
+  "name": "satsuma",
   "version": "0.3.0",
   "description": "An ultra-minimalist static site generator focused on JS-native solutions.",
   "main": "index.js",
   "bin": {
-    "zin": "bin/zin.js"
+    "satsuma": "bin/satsuma.js"
   },
   "keywords": [
     "static-site-generator",
     "ejs",
     "sass",
     "website-builder",
-    "zin",
+    "satsuma",
     "json",
     "minimalist"
   ],
@@ -19,7 +19,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node start.js",
-    "build": "node bin/zin.js build",
+    "build": "node bin/satsuma.js build",
     "lint": "eslint .",
     "format": "prettier --check .",
     "test": "node --test"

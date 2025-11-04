@@ -107,8 +107,8 @@ async function initProject({ yes = false, force = false } = {}) {
 
   const globalsTemplate = `module.exports = {
   site: {
-    name: "My Zin Project",
-    description: "A description of my Zin project."
+    name: "My Satsuma Project",
+    description: "A description of my Satsuma project."
   }
 };`;
   try {
