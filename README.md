@@ -1,15 +1,15 @@
-# Zin
+# Satsuma
 
 ## Introduction
 
-Zin is a static site generator designed around EJS templating, providing a uniform but flexible development environment that supports both rigorous use of templating and fast deployment and experimentation.
+Satsuma is a static site generator designed around EJS templating, providing a uniform but flexible development environment that supports both rigorous use of templating and fast deployment and experimentation.
 
 ### Ethos
 
-- **Minimalism**: Zin maintains a minimum of dependencies and prioritizes rapid development, deployment, and iteration.
+- **Minimalism**: Satsuma maintains a minimum of dependencies and prioritizes rapid development, deployment, and iteration.
 - **Uniform Environment**: All content and templates are stored in EJS and the project in general sticks to JS/Node-y ways of doing things, ensuring a uniform development environment that reduces cognitive overhead and maximizes expressiveness.
 - **Configurability:** While it provides some starter pages and templates, the structure of your project is up to you via the config file. 
-- **Template-Driven Development**: Zin is biased towards storing site content as pure data, emphasizing templates. This structure underscores the DRY (Don't Repeat Yourself) principle and promotes consistent theming.
+- **Template-Driven Development**: Satsuma is biased towards storing site content as pure data, emphasizing templates. This structure underscores the DRY (Don't Repeat Yourself) principle and promotes consistent theming.
 
 ### Key Functionality
 
@@ -21,33 +21,33 @@ Zin is a static site generator designed around EJS templating, providing a unifo
 
 ## Installation
 
-To install Zin globally, run:
+To install Satsuma globally, run:
 
-npm install -g zin
+npm install -g satsuma
 
 ## Usage
 
 ### Initialize a new project
-`zin init`
+`satsuma init`
 
 Flags:
 - `--yes` / `-y`: create starter files without prompting
 - `--force` / `-f`: overwrite existing `source`, `config.js`, or `globals.js`
 
 ### Build the site
-`zin build`
+`satsuma build`
 
 ### Start development server
-`zin serve`
+`satsuma serve`
 
-Optional: `zin serve --port 4000`
+Optional: `satsuma serve --port 4000`
 
 ### Clean the publish directory
-`zin clean`
+`satsuma clean`
 
 ## Compiler Mechanics
 
-Zin's compiler is crafted to take the rich content and configurations from the `source` directory and mold it into a deploy-ready structure within the `public` directory.
+Satsuma's compiler is crafted to take the rich content and configurations from the `source` directory and mold it into a deploy-ready structure within the `public` directory.
 
 #### Compilation Flow:
 
@@ -77,11 +77,11 @@ public/
 
 ## The Development Server
    
-Zin's server is more than just a static file server; it's a dynamic development companion:
+Satsuma's server is more than just a static file server; it's a dynamic development companion:
    
 1. **Live Reloading**: Changes in the `source` directory trigger the server to recompile the affected parts and refresh your browser, ensuring you always view the latest version.
    
-2. **No Caching**: To guarantee that developers see real-time modifications, the Zin server avoids caching. Every request fetches fresh content.
+2. **No Caching**: To guarantee that developers see real-time modifications, the Satsuma server avoids caching. Every request fetches fresh content.
    
 3. **Incremental rebuilds**: Only the pages, styles, or assets touched by a change are recompiled. Dependency graphs track template includes and SCSS imports.
 
@@ -89,7 +89,7 @@ Zin's server is more than just a static file server; it's a dynamic development 
 
 ### Rationale Behind Server Mechanics:
 
-- **Avoiding Surprises**: Incremental rebuilds are the default, but `zin clean` is available when you need a fresh publish directory.
+- **Avoiding Surprises**: Incremental rebuilds are the default, but `satsuma clean` is available when you need a fresh publish directory.
    
 - **Speed and Efficiency**: Instant updates and live reloading eliminate the manual refresh chore, accelerating the development process.
    
@@ -97,17 +97,17 @@ Zin's server is more than just a static file server; it's a dynamic development 
 
 ### Design Philosophy
 
-Zin emphasizes fluidity, simplicity, and a no-surprises environment. The compiler and server mechanics aim to give developers a streamlined experience, where the focus remains on content and creativity, not troubleshooting or manual interventions. Every design choice, from live reloading to wiping the `public` directory, stems from a commitment to offering an uncomplicated, real-time development experience.
+Satsuma emphasizes fluidity, simplicity, and a no-surprises environment. The compiler and server mechanics aim to give developers a streamlined experience, where the focus remains on content and creativity, not troubleshooting or manual interventions. Every design choice, from live reloading to wiping the `public` directory, stems from a commitment to offering an uncomplicated, real-time development experience.
 
 ## Configuration
 
-Zin stores configurations in two files: `config.js`, for server configuration, and `globals.js`, for metadata like the site title and description.
+Satsuma stores configurations in two files: `config.js`, for server configuration, and `globals.js`, for metadata like the site title and description.
 
 ### `config`
 
-Zin's server configuration is managed through a `config.js` file located at the project root.
+Satsuma's server configuration is managed through a `config.js` file located at the project root.
 
-- **`port`**: Port used when running `zin serve`.
+- **`port`**: Port used when running `satsuma serve`.
 - **`directories`**: Controls the layout of your workspace.
   - **`source`**: Root for pages, templates, assets, and styles.
   - **`public`**: Publish directory (served in dev and suitable for deployment).
